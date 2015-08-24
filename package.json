@@ -24,6 +24,7 @@
   "main": "./core/index",
   "scripts": {
     "start": "node index",
+    "install": "grunt shell:ember:init shell:bower assets default prod",
     "test": "grunt validate --verbose"
   },
   "engines": {
