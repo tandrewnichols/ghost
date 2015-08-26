@@ -68,3 +68,16 @@ pre code, tt {
     border: none;
     padding: 0;
 }
+
+.scroll-down.icon-arrow-left {
+  text-decoration: none;
+}
+h2.post-title a:hover {
+  text-decoration: none;
+}
+.scroll-down.icon-arrow-left:focus {
+  color: rgba(255,255,255,0.7);
+}
+.nav-opened .menu-button {
+  opacity: 0;
+}
