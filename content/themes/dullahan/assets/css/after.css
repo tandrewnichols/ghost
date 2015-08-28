@@ -81,7 +81,7 @@ h2.post-title a:hover {
 .nav-opened .menu-button {
   opacity: 0;
 }
-.img-override {
+img.img-override {
   left: initial;
   transform: initial;
 }
