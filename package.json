@@ -20,7 +20,7 @@
   "scripts": {
     "preinstall": "node core/server/utils/npm/preinstall.js",
     "start": "node index",
-    "install": "grunt shell:ember:init shell:bower assets default prod",
+    "install": "grunt subgrunt:init clean:tmp default prod",
     "test": "grunt validate --verbose"
   },
   "engines": {
