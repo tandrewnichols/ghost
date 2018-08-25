@@ -1,5 +1,3 @@
-/*globals describe, before, it*/
-/*jshint expr:true*/
 var should         = require('should'),
     sinon          = require('sinon'),
     hbs            = require('express-hbs'),
@@ -8,11 +6,17 @@ var should         = require('should'),
 // Stuff we are testing
     handlebars     = hbs.handlebars,
     helpers        = require('../../../server/helpers'),
-    errors         = require('../../../server/errors');
+    errors         = require('../../../server/errors'),
+
+    sandbox        = sinon.sandbox.create();
 
 describe('{{#is}} helper', function () {
     before(function () {
         utils.loadHelpers();
+    });
+
+    afterEach(function () {
+        sandbox.restore();
     });
 
     it('has loaded is block helper', function () {
@@ -21,8 +25,8 @@ describe('{{#is}} helper', function () {
 
     // All positive tests
     it('should match single context "index"', function () {
-        var fn = sinon.spy(),
-            inverse = sinon.spy();
+        var fn = sandbox.spy(),
+            inverse = sandbox.spy();
 
         helpers.is.call(
             {},
@@ -30,13 +34,13 @@ describe('{{#is}} helper', function () {
             {fn: fn, inverse: inverse, data: {root: {context: ['home', 'index']}}}
         );
 
-        fn.called.should.be.true;
-        inverse.called.should.be.false;
+        fn.called.should.be.true();
+        inverse.called.should.be.false();
     });
 
     it('should match OR context "index, paged"', function () {
-        var fn = sinon.spy(),
-            inverse = sinon.spy();
+        var fn = sandbox.spy(),
+            inverse = sandbox.spy();
 
         helpers.is.call(
             {},
@@ -44,13 +48,13 @@ describe('{{#is}} helper', function () {
             {fn: fn, inverse: inverse, data: {root: {context: ['tag', 'paged']}}}
         );
 
-        fn.called.should.be.true;
-        inverse.called.should.be.false;
+        fn.called.should.be.true();
+        inverse.called.should.be.false();
     });
 
     it('should not match "paged"', function () {
-        var fn = sinon.spy(),
-            inverse = sinon.spy();
+        var fn = sandbox.spy(),
+            inverse = sandbox.spy();
 
         helpers.is.call(
             {},
@@ -58,14 +62,14 @@ describe('{{#is}} helper', function () {
             {fn: fn, inverse: inverse, data: {root: {context: ['index', 'home']}}}
         );
 
-        fn.called.should.be.false;
-        inverse.called.should.be.true;
+        fn.called.should.be.false();
+        inverse.called.should.be.true();
     });
 
     it('should log warning with no args', function () {
-        var fn = sinon.spy(),
-            inverse = sinon.spy(),
-            logWarn = sinon.stub(errors, 'logWarn');
+        var fn = sandbox.spy(),
+            inverse = sandbox.spy(),
+            logWarn = sandbox.stub(errors, 'logWarn');
 
         helpers.is.call(
             {},
@@ -73,8 +77,8 @@ describe('{{#is}} helper', function () {
             {fn: fn, inverse: inverse, data: {root: {context: ['index', 'home']}}}
         );
 
-        logWarn.called.should.be.true;
-        fn.called.should.be.false;
-        inverse.called.should.be.false;
+        logWarn.called.should.be.true();
+        fn.called.should.be.false();
+        inverse.called.should.be.false();
     });
 });

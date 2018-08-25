@@ -1,5 +1,3 @@
-/*globals describe, before, beforeEach, afterEach, it*/
-/*jshint expr:true*/
 var testUtils       = require('../utils'),
     should          = require('should'),
     sinon           = require('sinon'),
@@ -20,8 +18,8 @@ describe('Permissions', function () {
     });
 
     describe('actions map', function () {
-        before(function (done) {
-            Models.init().then(done).catch(done);
+        before(function () {
+            Models.init();
         });
 
         beforeEach(function () {
@@ -51,12 +49,14 @@ describe('Permissions', function () {
         it('should return public for no context', function () {
             permissions.parseContext().should.eql({
                 internal: false,
+                external: false,
                 user: null,
                 app: null,
                 public: true
             });
             permissions.parseContext({}).should.eql({
                 internal: false,
+                external: false,
                 user: null,
                 app: null,
                 public: true
@@ -66,12 +66,14 @@ describe('Permissions', function () {
         it('should return public for random context', function () {
             permissions.parseContext('public').should.eql({
                 internal: false,
+                external: false,
                 user: null,
                 app: null,
                 public: true
             });
             permissions.parseContext({client: 'thing'}).should.eql({
                 internal: false,
+                external: false,
                 user: null,
                 app: null,
                 public: true
@@ -81,6 +83,7 @@ describe('Permissions', function () {
         it('should return user if user populated', function () {
             permissions.parseContext({user: 1}).should.eql({
                 internal: false,
+                external: false,
                 user: 1,
                 app: null,
                 public: false
@@ -90,6 +93,7 @@ describe('Permissions', function () {
         it('should return app if app populated', function () {
             permissions.parseContext({app: 5}).should.eql({
                 internal: false,
+                external: false,
                 user: null,
                 app: 5,
                 public: false
@@ -99,6 +103,7 @@ describe('Permissions', function () {
         it('should return internal if internal provided', function () {
             permissions.parseContext({internal: true}).should.eql({
                 internal: true,
+                external: false,
                 user: null,
                 app: null,
                 public: false
@@ -106,6 +111,7 @@ describe('Permissions', function () {
 
             permissions.parseContext('internal').should.eql({
                 internal: true,
+                external: false,
                 user: null,
                 app: null,
                 public: false
@@ -142,16 +148,16 @@ describe('Permissions', function () {
         });
 
         it('should return unchanged object for post with public context', function (done) {
-            var public = {context: {}};
+            var publicContext = {context: {}};
 
-            permissions.applyPublicRules('posts', 'browse', _.cloneDeep(public)).then(function (result) {
-                result.should.not.eql(public);
+            permissions.applyPublicRules('posts', 'browse', _.cloneDeep(publicContext)).then(function (result) {
+                result.should.not.eql(publicContext);
                 result.should.eql({
                     context: {},
                     status: 'published'
                 });
 
-                return permissions.applyPublicRules('posts', 'browse', _.extend({}, _.cloneDeep(public), {status: 'published'}));
+                return permissions.applyPublicRules('posts', 'browse', _.extend({}, _.cloneDeep(publicContext), {status: 'published'}));
             }).then(function (result) {
                 result.should.eql({
                     context: {},
@@ -168,7 +174,7 @@ describe('Permissions', function () {
             permissions.applyPublicRules('posts', 'read', _.cloneDeep(draft)).then(function () {
                 done('Did not throw an error for draft');
             }).catch(function (err) {
-                err.should.be.a.String;
+                err.should.be.a.String();
                 done();
             });
         });
@@ -179,7 +185,7 @@ describe('Permissions', function () {
             permissions.applyPublicRules('posts', 'browse', _.cloneDeep(draft)).then(function () {
                 done('Did not throw an error for draft');
             }).catch(function (err) {
-                err.should.be.a.String;
+                err.should.be.a.String();
                 done();
             });
         });
@@ -208,7 +214,7 @@ describe('Permissions', function () {
             permissions.applyPublicRules('posts', 'browse', _.cloneDeep(draft)).then(function () {
                 done('Did not throw an error for draft');
             }).catch(function (err) {
-                err.should.be.a.String;
+                err.should.be.a.String();
                 done();
             });
         });
@@ -219,7 +225,7 @@ describe('Permissions', function () {
             permissions.applyPublicRules('posts', 'browse', _.cloneDeep(draft)).then(function () {
                 done('Did not throw an error for draft');
             }).catch(function (err) {
-                err.should.be.a.String;
+                err.should.be.a.String();
                 done();
             });
         });
@@ -230,29 +236,29 @@ describe('Permissions', function () {
             permissions.applyPublicRules('posts', 'read', _.cloneDeep(draft)).then(function () {
                 done('Did not throw an error for draft');
             }).catch(function (err) {
-                err.should.be.a.String;
+                err.should.be.a.String();
                 draft = {context: {},  data: {status: 'draft', uuid: '1234-abcd', slug: 'abcd'}};
 
                 return permissions.applyPublicRules('posts', 'read', _.cloneDeep(draft)).then(function () {
                     done('Did not throw an error for draft');
                 }).catch(function (err) {
-                    err.should.be.a.String;
+                    err.should.be.a.String();
                     done();
                 });
             });
         });
 
         it('should return unchanged object for user with public context', function (done) {
-            var public = {context: {}};
+            var publicContext = {context: {}};
 
-            permissions.applyPublicRules('users', 'browse', _.cloneDeep(public)).then(function (result) {
-                result.should.not.eql(public);
+            permissions.applyPublicRules('users', 'browse', _.cloneDeep(publicContext)).then(function (result) {
+                result.should.not.eql(publicContext);
                 result.should.eql({
                     context: {},
                     status: 'active'
                 });
 
-                return permissions.applyPublicRules('users', 'browse', _.extend({}, _.cloneDeep(public), {status: 'active'}));
+                return permissions.applyPublicRules('users', 'browse', _.extend({}, _.cloneDeep(publicContext), {status: 'active'}));
             }).then(function (result) {
                 result.should.eql({
                     context: {},
@@ -269,7 +275,7 @@ describe('Permissions', function () {
             permissions.applyPublicRules('users', 'browse', _.cloneDeep(inactive)).then(function () {
                 done('Did not throw an error for inactive');
             }).catch(function (err) {
-                err.should.be.a.String;
+                err.should.be.a.String();
                 done();
             });
         });

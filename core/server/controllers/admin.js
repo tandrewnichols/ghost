@@ -1,8 +1,7 @@
-var _             = require('lodash'),
+var Promise       = require('bluebird'),
     api           = require('../api'),
     errors        = require('../errors'),
     updateCheck   = require('../update-check'),
-    config        = require('../config'),
     adminControllers;
 
 adminControllers = {
@@ -13,47 +12,25 @@ adminControllers = {
         /*jslint unparam:true*/
 
         function renderIndex() {
-            var configuration;
-            return api.configuration.browse().then(function then(data) {
-                configuration = data.configuration;
-            }).then(function getAPIClient() {
-                return api.clients.read({slug: 'ghost-admin'});
-            }).then(function renderIndex(adminClient) {
-                configuration.push({key: 'clientId', value: adminClient.clients[0].slug});
-                configuration.push({key: 'clientSecret', value: adminClient.clients[0].secret});
+            var configuration,
+                fetch = {
+                    configuration: api.configuration.read().then(function (res) { return res.configuration[0]; }),
+                    client: api.clients.read({slug: 'ghost-admin'}).then(function (res) { return res.clients[0]; })
+                };
 
-                var apiConfig = _.omit(configuration, function omit(value) {
-                    return _.contains(['environment', 'database', 'mail', 'version'], value.key);
-                });
+            return Promise.props(fetch).then(function renderIndex(result) {
+                configuration = result.configuration;
+
+                configuration.clientId = {value: result.client.slug, type: 'string'};
+                configuration.clientSecret = {value: result.client.secret, type: 'string'};
 
                 res.render('default', {
-                    skip_google_fonts: config.isPrivacyDisabled('useGoogleFonts'),
-                    configuration: apiConfig
+                    configuration: configuration
                 });
             });
         }
 
-        updateCheck().then(function then() {
-            return updateCheck.showUpdateNotification();
-        }).then(function then(updateVersion) {
-            if (!updateVersion) {
-                return;
-            }
-
-            var notification = {
-                type: 'upgrade',
-                location: 'settings-about-upgrade',
-                dismissible: false,
-                status: 'alert',
-                message: 'Ghost ' + updateVersion + ' is available! Hot Damn. <a href="http://support.ghost.org/how-to-upgrade/" target="_blank">Click here</a> to upgrade.'
-            };
-
-            return api.notifications.browse({context: {internal: true}}).then(function then(results) {
-                if (!_.some(results.notifications, {message: notification.message})) {
-                    return api.notifications.add({notifications: [notification]}, {context: {internal: true}});
-                }
-            });
-        }).finally(function noMatterWhat() {
+        updateCheck().finally(function noMatterWhat() {
             renderIndex();
         }).catch(errors.logError);
     }
