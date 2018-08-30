@@ -25,6 +25,10 @@ export default Component.extend({
             classes += `gh-alert-${typeMapping[type]}`;
         }
 
+        if (type === 'info') {
+            return 'hidden';
+        }
+
         return classes;
     }),
 
