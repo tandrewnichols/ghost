@@ -20,7 +20,7 @@
   "scripts": {
     "preinstall": "node core/server/utils/npm/preinstall.js",
     "start": "node index",
-    "install": "grunt subgrunt:init clean:tmp default prod",
+    "install": "grunt build prod",
     "test": "grunt validate --verbose"
   },
   "engines": {
