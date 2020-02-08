@@ -42,12 +42,31 @@
     <div class="inner">
 
         <div class="post-feed">
-            {{#foreach posts}}
-
-                {{!-- The tag below includes the markup for each post - partials/post-card.hbs --}}
+            {{#foreach posts to="6"}}
                 {{> "post-card"}}
-
             {{/foreach}}
+            {{#foreach posts from="7" to="13"}}
+                {{> "post-card"}}
+            {{/foreach}}
+            {{#foreach posts from="14" to="20"}}
+                {{> "post-card"}}
+            {{/foreach}}
+            {{#foreach posts from="21"}}
+                {{> "post-card"}}
+            {{/foreach}}
+        </div>
+
+        <div style="width:100%;margin-bottom:20px">
+            <!-- Horizontal Native -->
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-3478521594413822"
+                data-ad-slot="7397912944"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
         </div>
 
     </div>

@@ -24,13 +24,28 @@ into the {body} of the default.hbs template --}}
     <div class="inner">
 
         <div class="post-feed">
-            {{#foreach posts}}
-
-                {{!-- The tag below includes the markup for each post - partials/post-card.hbs --}}
+            {{#foreach posts to="4"}}
                 {{> "post-card"}}
-
+            {{/foreach}}
+            {{#foreach posts from="5" to="7"}}
+                {{> "post-card"}}
+            {{/foreach}}
+            {{#foreach posts from="8"}}
+                {{> "post-card"}}
             {{/foreach}}
         </div>
 
+        <div style="width:100%">
+            <!-- Horizontal Native -->
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-3478521594413822"
+                data-ad-slot="7397912944"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
     </div>
 </main>
