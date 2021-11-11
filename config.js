@@ -4,6 +4,7 @@
 
 var path = require('path'),
     config;
+console.warn(process.env.DATABASE_URL);
 
 config = {
     // ### Production
