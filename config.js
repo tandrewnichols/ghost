@@ -4,7 +4,6 @@
 
 var path = require('path'),
     config;
-console.warn(process.env.DATABASE_URL);
 
 config = {
     // ### Production
@@ -27,7 +26,7 @@ config = {
         },
         database: {
             client: 'pg',
-            connection: process.env.DATABASE_URL,
+            connection: process.env.DATABASE_URL + '?ssl=true',
             debug: false
         },
 
